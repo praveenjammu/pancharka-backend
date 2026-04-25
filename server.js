@@ -1,7 +1,7 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import mongoose from "mongoose";
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
 
 dotenv.config();
 
@@ -10,11 +10,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ✅ MongoDB Connection
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+// MongoDB Connection
+mongoose.connect(process.env.MONGO_URI)
 .then(() => {
   console.log("🔥 MongoDB Connected Successfully");
 })
@@ -28,7 +25,7 @@ app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
-// Test orders route (temporary)
+// Test API
 app.get("/api/orders", (req, res) => {
   res.json([]);
 });
