@@ -10,7 +10,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
+
+// 🔥 MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
 .then(() => {
   console.log("🔥 MongoDB Connected Successfully");
@@ -20,15 +21,47 @@ mongoose.connect(process.env.MONGO_URI)
   console.error(err.message);
 });
 
-// Test route
+
+// 📦 Order Model
+const Order = mongoose.model("Order", {
+  name: String,
+  phone: String,
+  address: String,
+  product: String,
+  amount: Number,
+  paymentId: String,
+  paymentStatus: String,
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+
+// 🧪 Test route
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
-// Test API
-app.get("/api/orders", (req, res) => {
-  res.json([]);
+
+// 📦 SAVE ORDER
+app.post("/api/orders", async (req, res) => {
+  try {
+    const order = new Order(req.body);
+    await order.save();
+    res.json({ success: true, order });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
+
+
+// 📊 GET ORDERS (REAL DATA)
+app.get("/api/orders", async (req, res) => {
+  const orders = await Order.find().sort({ createdAt: -1 });
+  res.json(orders);
+});
+
 
 const PORT = process.env.PORT || 5000;
 
