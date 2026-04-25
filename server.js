@@ -38,13 +38,34 @@ const Order = mongoose.model("Order", {
 });
 
 
-// 🧪 Test route
+// 🧪 Home route
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
 
-// 📦 SAVE ORDER
+// 🧪 TEST ORDER (for browser testing)
+app.get("/test-order", async (req, res) => {
+  try {
+    const order = new Order({
+      name: "Test User",
+      phone: "9999999999",
+      address: "Delhi",
+      product: "Pancharka",
+      amount: 499,
+      paymentStatus: "Paid"
+    });
+
+    await order.save();
+
+    res.send("✅ Test order saved");
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+
+// 📦 SAVE ORDER (POST)
 app.post("/api/orders", async (req, res) => {
   try {
     const order = new Order(req.body);
@@ -56,10 +77,14 @@ app.post("/api/orders", async (req, res) => {
 });
 
 
-// 📊 GET ORDERS (REAL DATA)
+// 📊 GET ORDERS
 app.get("/api/orders", async (req, res) => {
-  const orders = await Order.find().sort({ createdAt: -1 });
-  res.json(orders);
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 
