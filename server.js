@@ -117,7 +117,25 @@ app.get('/api/health', (req, res) => {
 // AUTH ROUTES
 // ═══════════════════════════════════════════
 
-// POST /api/auth/check-username
+// ═══ DEBUG: Test login (remove after fix) ═══
+app.get('/api/debug-login', async (req, res) => {
+  try {
+    const admin = await Admin.findOne({ username: 'admin' });
+    if (!admin) return res.json({ error: 'No admin found in DB' });
+    const jwtOk = !!process.env.JWT_SECRET;
+    const passOk = await bcrypt.compare('pancharka123', admin.passwordHash);
+    res.json({
+      adminFound: true,
+      username: admin.username,
+      isActive: admin.isActive,
+      passwordMatch: passOk,
+      jwtSecretSet: jwtOk,
+      jwtSecretLength: (process.env.JWT_SECRET || '').length
+    });
+  } catch(err) {
+    res.json({ error: err.message });
+  }
+});
 app.post('/api/auth/check-username', authLimiter, async (req, res) => {
   try {
     const { username } = req.body;
