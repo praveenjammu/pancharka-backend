@@ -23,6 +23,7 @@ const PORT = process.env.PORT || 3001;
 // ═══════════════════════════════════════════
 // MIDDLEWARE
 // ═══════════════════════════════════════════
+app.set('trust proxy', 1);
 app.use(helmet());
 app.use(cors({
   origin: [process.env.FRONTEND_URL || 'https://pancharka.com', 'http://localhost:3000', 'http://127.0.0.1:5500'],
