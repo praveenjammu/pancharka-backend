@@ -23,6 +23,7 @@ const PORT = process.env.PORT || 3001;
 // ═══════════════════════════════════════════
 // MIDDLEWARE
 // ═══════════════════════════════════════════
+// Required for Render/Heroku/proxy deployments
 app.set('trust proxy', 1);
 app.use(helmet());
 app.use(cors({
@@ -36,7 +37,7 @@ const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
 app.use('/api/', limiter);
 
 // Stricter limit on auth routes
-const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: { error: 'Too many login attempts. Try again in 15 minutes.' } });
+const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 50, message: { error: 'Too many login attempts. Try again in 15 minutes.' } });
 
 // ═══════════════════════════════════════════
 // DATABASE CONNECTION
